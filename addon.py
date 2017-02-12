@@ -1,3 +1,8 @@
+"""Een Kodi add-on om kerkdienstgemist.nl livestreams te bekijken/luisteren."""
+
+__copyright__ = "Copyright (C) 2017 Torro"
+
+
 import sys
 import urllib
 import urlparse
@@ -16,8 +21,8 @@ def build_url(query):
 
 
 def getKDGLive():
-    """GET the page at 'https://www.kerkdienstgemist.nl/browse/live/'."""
-    url = 'https://kerkdienstgemist.nl/browse/live/'
+    """Make a list of livepages to be scraped"""
+    url = 'https://kerkdienstgemist.nl/browse/live'
     bcnum = int(BeautifulSoup(requests.get(url).text, 'html.parser')
                 .find_all('span', 'bold')[2].string)
     pagenum = (bcnum - 1) / 10 + 1
@@ -28,7 +33,7 @@ def getKDGLive():
 
 
 def parseKDGLive(pagelist):
-    """Create an index of live broadcasts on the page returned by getKDGLive"""
+    """Make a list of all live broadcasts on the pages in the pagelist"""
     broadcast_tree = {}
     treeindex = 1
 
@@ -50,9 +55,7 @@ def parseKDGLive(pagelist):
 
 
 def buildServicesList(broadcast_tree):
-    """Fill the 'Live' directory with the live broadcasts in broadcast_tree,
-    scraped from kerkdienstgemist.nl by parseKDGLive.
-    """
+    """Fill the 'Live' directory with the live broadcasts in broadcast_tree"""
     broadcast_list = []
 
     for broadcast in broadcast_tree:
@@ -76,6 +79,17 @@ def buildServicesList(broadcast_tree):
     xbmcplugin.endOfDirectory(addon_handle)
 
 
+def playStation():
+    """Get the stream for the selected broadcast; hand it off to kodi"""
+    asseturl = requests.get('https://www.kerkdienstgemist.nl' +
+                            args['url'][0]).url + '/embed'
+    stream = BeautifulSoup(
+                           requests.get(asseturl).text, 'html.parser'
+                           ).body.find_all('script')[3].string.split("'")[1]
+    play_item = xbmcgui.ListItem(path=stream)
+    xbmcplugin.setResolvedUrl(addon_handle, True, listitem=play_item)
+
+
 mode = args.get('mode', None)
 
 if mode is None:
@@ -84,11 +98,4 @@ if mode is None:
     buildServicesList(uitzendingen)
 
 elif mode[0] == 'stream':
-    asseturl = requests.get('https://www.kerkdienstgemist.nl' +
-                            args['url'][0]).url + '/embed'
-    stream = BeautifulSoup(
-                           requests.get(asseturl).text,
-                           'html.parser').body.find_all(
-                           'script')[3].string.split("'")[1]
-    play_item = xbmcgui.ListItem(path=stream)
-    xbmcplugin.setResolvedUrl(addon_handle, True, listitem=play_item)
+    playStation()
