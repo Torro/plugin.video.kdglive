@@ -1,3 +1,6 @@
+v1.0.2-beta
+- Dropped Requests module dependency due to SSL/TLS bug
+
 v1.0.1-beta
 - Add-on licensed under GPLv3
 - Refactored the hand-off of the selected stream
