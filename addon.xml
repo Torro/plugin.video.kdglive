@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.kdgLiveTesting" name="KDG Live" version="1.0.1-beta" provider-name="Torro">
+<addon id="plugin.video.kdglive" name="KDG Live" version="1.0.2-beta" provider-name="Torro">
 	<requires>
 		<import addon="xbmc.python"                 version="2.1.0"/>
 		<import addon="script.module.beautifulsoup" version="3.2.1"/>
