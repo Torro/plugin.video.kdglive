@@ -1,3 +1,6 @@
+v1.0.3-beta
+- Streams which require registration are disabled
+
 v1.0.2-beta
 - Dropped Requests module dependency due to SSL/TLS bug
 

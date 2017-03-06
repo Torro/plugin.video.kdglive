@@ -1,14 +1,18 @@
+# This Python file uses the following encoding: utf-8
 import sys
 import urllib
+import urllib2
 import urlparse
 import xbmcgui
 import xbmcplugin
-import urllib2
 from bs4 import BeautifulSoup
 
 base_url = sys.argv[0]
 addon_handle = int(sys.argv[1])
 args = urlparse.parse_qs(sys.argv[2][1:])
+mediapath = sys.path[0] + '/resources/media/'
+iconprivate = mediapath + 'iconPrivate.png'
+thumbprivate = mediapath + 'thumbPrivate.png'
 
 
 def build_url(query):
@@ -40,7 +44,7 @@ def parseKDGLive(pagelist):
                 {treeindex:
                  {'Name': broadcast.h3.a.string.encode('utf-8'),
                   'url': broadcast.h3.a['href'],
-                  'Status': broadcast.span.string
+                  'Status': broadcast.find_all('span')[2].string
                   }
                  }
                 )
@@ -56,13 +60,18 @@ def buildServicesList(broadcast_tree):
 
     for broadcast in broadcast_tree:
         li = xbmcgui.ListItem(label=broadcast_tree[broadcast]['Name'])
-        li.setProperty('IsPlayable', 'true')
         url = build_url(
             {'mode': 'stream',
              'url': broadcast_tree[broadcast]['url'],
-             'title': broadcast_tree[broadcast]['Name']
-             }
-            )
+             'title': broadcast_tree[broadcast]['Name']})
+
+        if broadcast_tree[broadcast]['Status'] is not None:
+            li.setLabel('(Privé) ' + li.getLabel())
+            li.setProperty('IsPlayable', 'false')
+            li.setArt({'icon': iconprivate,
+                       'thumb': thumbprivate})
+        else:
+            li.setProperty('IsPlayable', 'true')
 
         broadcast_list.append((url, li, False))
 

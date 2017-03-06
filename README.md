@@ -7,7 +7,7 @@ KDG Live: Kijk en luister kerkdienstgemist.nl livestreams met Kodi.
 Installatie
 -----------
 
-Download [plugin.video.kdglive.zip](https://github.com/Torro/plugin.video.kdglive/releases/download/1.0.2-beta/plugin.video.kdglive.zip) en installeer de add-on in Kodi op de wijze die uw voorkeur heeft; bijvoorbeeld:
+Download [plugin.video.kdglive.zip](https://github.com/Torro/plugin.video.kdglive/releases/download/1.0.3-beta/plugin.video.kdglive.zip) en installeer de add-on in Kodi op de wijze die uw voorkeur heeft; bijvoorbeeld:
 
 1. Selecteer in het Kodi hoofdmenu:
   1. **`Systeem`** :arrow_heading_down:
