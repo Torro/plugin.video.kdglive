@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.kdglive" name="KDG Live" version="1.1.0-beta" provider-name="Torro">
+<addon id="plugin.video.kdglive" name="KDG Live" version="1.1.1" provider-name="Torro">
 	<requires>
 		<import addon="xbmc.python"                 version="2.1.0"/>
 		<import addon="script.module.beautifulsoup" version="3.2.1"/>
@@ -8,9 +8,29 @@
 		<provides>audio video</provides>
 	</extension>
 	<extension point="xbmc.addon.metadata">
-		<summary lang="nl">Bekijk/luister kerkdienstgemist.nl livestreams</summary>
-		<description lang="nl">Deze add-on stelt u in staat de diensten die live worden gestreamd via kerkdienstgemist.nl te bekijken/beluisteren</description>
-		<news></news>
+		<summary>Bekijk/luister kerkdienstgemist.nl livestreams</summary>
+		<description>Deze add-on stelt u in staat de diensten die live worden gestreamd via kerkdienstgemist.nl te bekijken/beluisteren</description>
+		<news>
+v1.1.1  (2017-12-15)
+- Pre-v2 release quickfix (functionality)
+
+v1.1.0-beta
+- Fixed bugs in stream resolution
+
+v1.0.3-beta
+- Streams which require registration are disabled
+
+v1.0.2-beta
+- Dropped Requests module dependency due to SSL/TLS bug
+
+v1.0.1-beta
+- Add-on licensed under GPLv3
+- Refactored the hand-off of the selected stream
+- Minor cleanup/changes/fixes
+
+v1.0.0-beta
+- Initial publication
+		</news>
 		<platform>all</platform>
 		<language>Nederlands</language>
 		<license>GPLv3+</license>

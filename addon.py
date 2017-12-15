@@ -1,7 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import sys
 import urllib
-import urllib2
 import urlparse
 import xbmcgui
 import xbmcplugin
@@ -21,59 +20,43 @@ def build_url(query):
 
 def getKDGLive():
     """Make a list of livepages to be scraped"""
-    url = 'https://kerkdienstgemist.nl/browse/live'
-    bcnum = int(BeautifulSoup(urllib.urlopen(url))
-                .findAll('span', 'bold')[2].string)
-    pagenum = (bcnum - 1) / 10 + 1
-    pagelist = ["{}?page={}".format(url, str(no)) for no
-                in range(1, pagenum + 1)]
+    start_url = 'https://kerkdienstgemist.nl/search?live=1&recent=1'
+    response = BeautifulSoup(urllib.urlopen(start_url))
+    bcnum = int(response.findAll('span', 'bold')[2].string)
+    pagerange = (bcnum - 1) / 5 + 1
+    pagelist = ["{}&page={}".format(start_url, str(no)) for no
+                in range(1, pagerange + 1)]
 
     return pagelist
 
 
 def parseKDGLive(pagelist):
     """Make a list of all live broadcasts on the pages in the pagelist"""
-    broadcast_tree = {}
-    treeindex = 1
-
+    broadcasts = []
+    
     for page in pagelist:
-        pagina = BeautifulSoup(urllib.urlopen(page))
+        response = BeautifulSoup(urllib.urlopen(page))
 
-        for broadcast in pagina.findAll('li', 'live'):
-            broadcast_tree.update(
-                {treeindex:
-                 {'Name': broadcast.h3.a.string.encode('utf-8'),
-                  'url': broadcast.h3.a['href'],
-                  'Status': broadcast.findAll('span')[2].string
-                  }
-                 }
-                )
-
-            treeindex += 1
-
-    return broadcast_tree
+        for broadcast in response.findAll('li', 'live'):
+            if broadcast.find('span', 'information').strong:
+                broadcasts.append(
+                                  (broadcast.h3.a.string,
+                                   broadcast.a['href']
+                                  )
+                                 )
+    return broadcasts
 
 
-def buildServicesList(broadcast_tree):
+def buildServicesList(broadcasts):
     """Fill the 'Live' directory with the live broadcasts in broadcast_tree"""
     broadcast_list = []
 
-    for broadcast in broadcast_tree:
-        li = xbmcgui.ListItem(label=broadcast_tree[broadcast]['Name'])
-        url = build_url(
-            {'mode': 'stream',
-             'url': broadcast_tree[broadcast]['url'],
-             'title': broadcast_tree[broadcast]['Name']})
+    for broadcast in broadcasts:
+        li = xbmcgui.ListItem(label=str(broadcast[0]))
+        url = build_url({'mode': 'stream','url': broadcast[1], 'title': str(broadcast[0])})
+        li.setProperty('IsPlayable', 'true')
 
-        if broadcast_tree[broadcast]['Status'] is not None:
-            li.setLabel('(Privé) ' + li.getLabel())
-            li.setProperty('IsPlayable', 'false')
-            li.setArt({'icon': iconprivate,
-                       'thumb': thumbprivate})
-        else:
-            li.setProperty('IsPlayable', 'true')
-
-        broadcast_list.append((url, li, False))
+        broadcast_list.append((url, li))
 
     xbmcplugin.addDirectoryItems(
         addon_handle, broadcast_list, len(broadcast_list)
