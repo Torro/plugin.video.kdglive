@@ -4,6 +4,7 @@ import urllib
 import urlparse
 import xbmcgui
 import xbmcplugin
+from HTMLParser import HTMLParser
 from BeautifulSoup import BeautifulSoup
 
 base_url = sys.argv[0]
@@ -33,6 +34,7 @@ def getKDGLive():
 def parseKDGLive(pagelist):
     """Make a list of all live broadcasts on the pages in the pagelist"""
     broadcasts = []
+    html = HTMLParser()
     
     for page in pagelist:
         response = BeautifulSoup(urllib.urlopen(page))
@@ -40,7 +42,7 @@ def parseKDGLive(pagelist):
         for broadcast in response.findAll('li', 'live'):
             if broadcast.find('span', 'information').strong:
                 broadcasts.append(
-                                  (broadcast.h3.a.string,
+                                  (html.unescape(broadcast.h3.a.text),
                                    broadcast.a['href']
                                   )
                                  )

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.kdglive" name="KDG Live" version="1.1.1" provider-name="Torro">
+<addon id="plugin.video.kdglive" name="KDG Live" version="1.1.2" provider-name="Torro">
 	<requires>
 		<import addon="xbmc.python"                 version="2.1.0"/>
 		<import addon="script.module.beautifulsoup" version="3.2.1"/>
@@ -11,7 +11,10 @@
 		<summary>Bekijk/luister kerkdienstgemist.nl livestreams</summary>
 		<description>Deze add-on stelt u in staat de diensten die live worden gestreamd via kerkdienstgemist.nl te bekijken/beluisteren</description>
 		<news>
-v1.1.1  (2017-12-15)
+v1.1.2 (2017-12-23)
+- Properly decode html-encoded characters in stream titles
+
+v1.1.1 
 - Pre-v2 release quickfix (functionality)
 
 v1.1.0-beta
