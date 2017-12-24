@@ -4,6 +4,7 @@ import urllib
 import urlparse
 import xbmcgui
 import xbmcplugin
+from HTMLParser import HTMLParser
 from BeautifulSoup import BeautifulSoup
 
 base_url = sys.argv[0]
@@ -40,7 +41,7 @@ def parseKDGLive(pagelist):
         for broadcast in response.findAll('li', 'live'):
             if broadcast.find('span', 'information').strong:
                 broadcasts.append(
-                                  (broadcast.h3.a.string,
+                                  (HTMLParser().unescape(broadcast.h3.a.text),
                                    broadcast.a['href']
                                   )
                                  )
