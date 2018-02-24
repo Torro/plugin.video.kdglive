@@ -53,8 +53,8 @@ def buildServicesList(broadcasts):
     broadcast_list = []
 
     for broadcast in broadcasts:
-        li = xbmcgui.ListItem(label=str(broadcast[0]))
-        url = build_url({'mode': 'stream','url': broadcast[1], 'title': str(broadcast[0])})
+        li = xbmcgui.ListItem(label=unicode(broadcast[0]))
+        url = build_url({'mode': 'stream','url': broadcast[1], 'title': u' '.join(broadcast[0]).encode('utf-8')})
         li.setProperty('IsPlayable', 'true')
 
         broadcast_list.append((url, li))
