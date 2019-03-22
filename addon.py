@@ -6,6 +6,7 @@ import xbmcgui
 import xbmcplugin
 from HTMLParser import HTMLParser
 from BeautifulSoup import BeautifulSoup
+import re
 
 base_url = sys.argv[0]
 addon_handle = int(sys.argv[1])
@@ -54,8 +55,9 @@ def buildServicesList(broadcasts):
 
     for broadcast in broadcasts:
         li = xbmcgui.ListItem(label=unicode(broadcast[0]))
-        url = build_url({'mode': 'stream','url': broadcast[1], 'title': u' '.join(broadcast[0]).encode('utf-8')})
+        url = build_url({'mode': 'stream','url': broadcast[1], 'title': u''.join(broadcast[0]).encode('utf-8')})
         li.setProperty('IsPlayable', 'true')
+        li.setInfo('video', {'mediatype': 'Video'})
 
         broadcast_list.append((url, li))
 
@@ -69,9 +71,23 @@ def buildServicesList(broadcasts):
 
 def playStation():
     """Get the stream for the selected broadcast; hand it off to kodi"""
+
     asseturl = urllib.urlopen('https://www.kerkdienstgemist.nl' + args.get('url')[0]).geturl() + '/embed'
-    stream = BeautifulSoup(urllib.urlopen(asseturl)).body.findAll('script')[3].string.split("'")[1]
-    play_item = xbmcgui.ListItem(path=stream)
+    play_item = xbmcgui.ListItem()
+
+    streampage = BeautifulSoup(urllib.urlopen(asseturl))
+    if streampage.body.audio:
+        play_item.setPath(path='https://kerkdienstgemist.nl/streams/' + asseturl.split('/')[-2] + '.mp3')
+        play_item.addStreamInfo('audio', {})
+    elif streampage.body.video:
+        scriptelem = streampage.body.findAll('script')[1]
+        streamlink = re.search('direct_link:\s+\"(https?://.*)\",', scriptelem.text).group(1)
+
+        play_item.setPath(path=streamlink)
+        play_item.addStreamInfo('video', {})
+    else:
+        xbmc.log('Error: Link not found', xbmc.LOGERROR)
+
     xbmcplugin.setResolvedUrl(addon_handle, True, listitem=play_item)
 
 
